@@ -140,3 +140,6 @@
 75482 = seventy five thousand four hundred eighty two
 102356 = one hundred two thousand three hundred fifty six
 854200 = eight hundred fifty four thousand two hundred
+1235014 = one million two hundred thirty five thousand fourteen
+5478412454 = five billion four hundred seventy eight million four hundred twelve thousand four hundred fifty four
+13459554841218.2154 = thirteen trillion four hundred fifty nine billion five hundred fifty four million eight hundred forty one thousand two hundred eighteen point two one five four
