@@ -1,0 +1,80 @@
+// digitxt will just be a function that takes a single argument.
+// That argument will be a numeric string so that it can handle
+// really huge numbers
+function digitxt(numericString) {
+    // The storage for the converted decimal numbers
+    decimal = '';
+
+    // The storage for the converted whole numbers
+    whole = [];
+
+    // Lets make sure that the numeric string we're converting
+    // is a clean one. So, let's do some sanitation job first.
+    sanitizedNumber = sanitize(numericString);
+
+    // Next, take that sanitized number and split it into two groups
+    // wholeNumbers and decimals
+    numberGroup = splitNumber(sanitizedNumber);
+
+
+}
+
+
+// functions used in digitxt
+// =========================
+
+function sanitize(numericString) {
+    // This function ensures that the passed numeric string is a clean one
+    // It will do a series of filters and replacements to achieve a
+    // convertable version.
+
+    // replace invalid characters with nothing
+    // (valid characters are numbers 0-9 and period)
+    numericString = numericString.replace(/[^\d\.]/ig, '');
+
+    // remove multiple dot occurences
+    numericString = numericString.replace(/\.{2,}/g, '.');
+
+    // remove the last dot character if present
+    numericString = numericString.replace(/\.$/, '');
+
+    // remove leading zeroes
+    numericString = numericString.replace(/^0+([^0]+)/, '$1');
+
+    // prepend `0` if first character is a dot
+    numericString = numericString.replace(/^\.(.+)/, '0.$1');
+
+    // only single decimals allowed
+    numericString = numericString.replace(/(\d+(\.\d+)?).*$/, '$1');
+
+    return numericString;
+}
+
+
+function splitNumber(sanitizedNumericString) {
+    // This function will split the numeric string into
+    // two groups: wholeNumbers and decimals
+    numSplit = sanitizedNumericString.split('.');
+
+    // The first splitting stage only does the separation for whole numbers
+    // and decimals. Whole numbers itself needs some splitting so let's
+    // do it here.
+    splittedWholeNumbers = splitWholeNumbers(numSplit[0]);
+
+    // Then return the splitted number as an object literal
+    return {
+        wholeNumbers: splittedWholeNumbers,
+        decimals: numSplit[1]
+    };
+}
+
+
+function splitWholeNumbers(wholeNumber) {
+    // This function will split the whole number intro groups of three
+    // starting from the last position
+    // Regex copied from http://stackoverflow.com/questions/2901102/how-to-print-a-number-with-commas-as-thousands-separators-in-javascript
+    wholeNumberRegroup = wholeNumber.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    wholeNumberSplits = wholeNumberRegroup.split(',');
+
+    return wholeNumberSplits;
+}
