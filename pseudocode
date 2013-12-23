@@ -1,3 +1,7 @@
+// The dictionary of numbers.
+// Its value must be loaded from an external JSON file.
+numbersDictionary = {};
+
 // digitxt will just be a function that takes a single argument.
 // That argument will be a numeric string so that it can handle
 // really huge numbers
@@ -16,7 +20,33 @@ function digitxt(numericString) {
     // wholeNumbers and decimals
     numberGroup = splitNumber(sanitizedNumber);
 
+    // Then, loop through the whole numbers group and convert each
+    // subgroup on its own denomination
+    numberGroup.wholeNumbers.forEach(function (subgroup, index) {
+        // Identify the denomination by its position.
+        // The position must be grabbed from the end of the dictionary.
+        denomIndex = numberGroup.wholeNumbers.length - index - 1;
+        denomination = '';
 
+        // Update the denomination only when its reaches the thousands
+        // place and above
+        if (denomIndex !== 0) {
+            denomination = ' ' + numbersDictionary.huge[denomIndex]
+        }
+
+        // For efficiency, append the converted number to the whole
+        // array and join them later
+        whole.push(convertTillHundreds(subgroup) + denomination)
+    });
+
+    // Convert the decimals only when present
+    if (numberGroup.decimals) {
+        decimal = ' point ' + convertDecimals(numberGroup.decimals)
+    }
+
+    // Combine the whole numbers and decimals convertion
+    // to create the final output
+    return whole.join(' ') + decimals;
 }
 
 
@@ -77,4 +107,68 @@ function splitWholeNumbers(wholeNumber) {
     wholeNumberSplits = wholeNumberRegroup.split(',');
 
     return wholeNumberSplits;
+}
+
+
+function convertDecimals(decimalNumber) {
+    // This converts the decimal number to its text form.
+    // Conversion here is easy because we don't have to worry about
+    // the denominations. Just plain index matching does the trick.
+    result = [];
+    decimals = decimalNumber.split('');
+
+    decimals.forEach(function (number) {
+        result.push(numbersDictionary.onesteens[number]);
+    });
+
+    return result.join(' ');
+}
+
+
+function convertTillHundreds(hundredNumber) {
+    // This the main conversion function. It converts the given number
+    // to its text from but only until the hundreds place.
+    // The number provided here must not exceed three digits.
+    // The number passed must be of type Integer.
+    // In order to properly convert, we need to get each individual places.
+    tens = 0;
+    ones = Math.floor(hundredNumber % 10);
+    hundreds  = Math.floor(hundredNumber / 100);
+    result = []
+
+    if (hundredNumber > 9) {
+        tens = Math.floor((hundredNumber % 100) / 10)
+    }
+
+    if (tens === 1) {
+        tens = tens * 10 + ones;
+    }
+
+    if (tens > 9) {
+        ones = 0;
+    }
+
+    if (hundreds > 0) {
+        result.push(numbersDictionary.onesteens[hundreds] + ' hundred');
+    }
+
+    if (tens === 0) {
+        // Handle ones value
+        if (!(hundreds > 0 && ones === 0)) {
+            result.push(numbersDictionary.onesteens[ones]);
+        }
+    } else if (tens === 1) {
+        // Handle teens value
+        result.push(numbersDictionary.onesteens[tens]);
+    } else if (tens > 1) {
+        tys = numbersDictionary.tys[tens]
+
+        if (ones > 0) {
+            tys = tys + ' ' + numbersDictionary.onesteens[ones]
+        }
+
+        result.push(tys);
+    }
+
+    return result.join(' ');
 }
