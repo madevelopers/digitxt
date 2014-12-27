@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import sys
 sys.path.append('../../python')
 
@@ -8,14 +8,13 @@ from colorama import Fore
 import digitxt
 
 colorama.init(autoreset=True)
-_digitxt = digitxt.Digitxt()
 
 with open('../test-data.txt') as test_data_file:
     for line in test_data_file:
         data = line.split('=')
         arg = data[0].strip()
         expect = data[1].strip()
-        received = _digitxt.convert(arg)
+        received = digitxt.digitxt(arg)
 
         if received == expect:
             result = 'passed'
@@ -24,7 +23,7 @@ with open('../test-data.txt') as test_data_file:
             result = 'failed'
             result_colored = '%s%s' % (Fore.RED, result)
 
-        print '%s: %s' % (arg, result_colored)
+        print('%s: %s' % (arg, result_colored))
         if result == 'failed':
-            print 'expected: %s%s' % (Fore.YELLOW, expect)
-            print 'received: %s%s' % (Fore.CYAN, received)
+            print('expected: %s%s' % (Fore.YELLOW, expect))
+            print('received: %s%s' % (Fore.CYAN, received))
