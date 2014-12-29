@@ -1,0 +1,11 @@
+{
+  "name": "digitxt-ramdajs",
+  "version": "0.0.1",
+  "description": "An implementation of digitxt in ramda.js",
+  "main": "digitxt-ramda.js",
+  "scripts": {
+    "test": "cd ../tests/ramdajs && node test.js"
+  },
+  "author": "Mark Anthony Degamo",
+  "license": "MIT"
+}
