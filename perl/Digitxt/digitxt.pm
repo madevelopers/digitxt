@@ -165,7 +165,6 @@ sub sanitize {
 
     return $num;
 }
-# print sanitize("abc001234.90..345...") . "\n";
 
 
 sub split_whole_numbers {
@@ -175,7 +174,6 @@ sub split_whole_numbers {
 
     return @num_split;
 }
-# print join(", ", split_whole_numbers "1234567890") . "\n";
 
 
 sub split_number {
@@ -183,7 +181,6 @@ sub split_number {
     my @nsplit        = split(/\./, sanitize($num));
     my @whole_numbers = split_whole_numbers($nsplit[0]);
     my $decimals      = scalar(@nsplit) > 1 ? $nsplit[1] : undef;
-    # UNSAON MAN NI??????
     my %num_split = (
         'whole_numbers' => \@whole_numbers,
         'decimals' => \$decimals,
@@ -191,9 +188,6 @@ sub split_number {
 
     return %num_split;
 }
-# my %result = split_number('123456.78');
-# print "> @{ $result{'whole_numbers'} }\n";
-# print "> ${ $result{'decimals'} }\n";
 
 
 sub convert_till_hundreds {
@@ -223,7 +217,6 @@ sub convert_till_hundreds {
 
     return join(' ', @output);
 }
-# print convert_till_hundreds '786';
 
 
 sub convert_decimals {
@@ -236,7 +229,6 @@ sub convert_decimals {
 
     return join ' ', @result;
 }
-# print convert_decimals('2054');
 
 
 sub digitxt {
@@ -244,13 +236,26 @@ sub digitxt {
     my $decimal = '';
     my @whole   = ();
 
-    my @result = split_number($num);
-    print "@{ $result{'whole_numbers'} }";
-
-    foreach my $k (0 .. $#whole_numbers) {
-        print "$k";
+    my %result        = split_number($num);
+    my @whole_numbers = @{ $result{'whole_numbers'} };
+    my $decimals      = ${ $result{'decimals'} };
+    
+    my $index        = undef;
+    my $denomination = undef;
+    my $val          = undef;
+    
+    foreach my $key (0 .. $#whole_numbers) {
+        $val = $whole_numbers[$key];
+        $index = (scalar @whole_numbers) - $key - 1;
+        $denomination = $index != 0 ? ' ' . $num_dict{'huge'}[$index] : '';
+        push @whole, convert_till_hundreds($val) . $denomination
+    }
+    
+    if ($decimals) {
+        $decimal = ' point ' . convert_decimals($decimals);
     }
 
     return join(' ', @whole) . $decimal;
 }
-digitxt('12345.67');
+
+return 1;
